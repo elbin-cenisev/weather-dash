@@ -46,7 +46,11 @@ function appendData(data) {
     document.getElementById("displayUV").textContent = uv;
 }
 
-getCityCoord(city);
+document.getElementById("searchBtn").addEventListener("click", function() {
+    let cityInput = document.getElementById("cityInput").value;
+    console.log(cityInput);
+    getCityCoord(cityInput);
+})
 
 // textbox put in a city name
 // you pass city name to getCityCoord which uses returns lat and lon
