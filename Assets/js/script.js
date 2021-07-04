@@ -46,11 +46,39 @@ function appendData(data) {
 
     // Get info for coming five days
     let forecast = data.daily;
-    var dayCard = document.createElement("LI");
-    // var dayWindSpeed =
-    // var dayHumid = 
-    dayCard.innerHTML = "Temp: " + forecast[0].temp.day;
-    document.getElementById("forecastList").appendChild(dayCard);
+    document.getElementById("forecastList").innerHTML = "";
+    for (let i = 0; i < 5; i++) {
+        // Convert data.current.dt into regular date
+        var epochDate = forecast[i].dt;
+        var myDate = new Date(0);
+        myDate.setUTCSeconds(epochDate)
+
+        var dayCard = document.createElement("LI");
+
+        // Get date for forecasted day
+        let dateForecast = (myDate.getMonth() + 1) + "/" + 
+                            myDate.getDate() + "/" +
+                            myDate.getFullYear();
+
+        // Get weather icon
+        let icon = forecast[i].weather[0].icon;
+        let iconURL = "http://openweathermap.org/img/wn/" + icon + "@2x.png"
+
+        // Get other weather data 
+        var tempForecast = "Temp: " + forecast[i].temp.day;
+        let windSpeedForecast = "Wind Speed: " + forecast[i].wind_speed;
+        let humidForecast = "Humidity: " + forecast[i].humidity + "%";
+
+        // Add info to dayCard
+        dayCard.innerHTML = '<img src="' + iconURL + '" alt="weatherIcon">' +
+                            "<p>" + dateForecast + "</p>" +
+                            "<p>" + tempForecast + "</p>" +
+                            "<p>" + windSpeedForecast + "</p>" + 
+                            "<p>" + humidForecast + "</p>"
+
+        // Append dayCard to HTML code
+        document.getElementById("forecastList").appendChild(dayCard);
+      }
 
 
     // Display info on page
