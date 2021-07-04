@@ -18,7 +18,7 @@ function getCityCoord(city) {
 }
 
 function getCityData(lat, lon) {
-    url = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude={part}&appid=" + apiKey
+    url = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&units=imperial&appid=" + apiKey
 
     fetch(url)
     .then(function (response) {
@@ -33,16 +33,27 @@ function getCityData(lat, lon) {
 }
 
 function appendData(data) {
+    // Convert data.current.dt into regular date
     var epochDate = data.current.dt;
     var myDate = new Date(0);
     myDate.setUTCSeconds(epochDate)
-    // var completeDate = myDate.setUTCSeconds(epochDate)
 
+    // Get current date's info
     let temp = data.current.temp;
     let windSpeed = data.current.wind_speed;
     let humid = data.current.humidity;
     let uv = data.current.uvi;
 
+    // Get info for coming five days
+    let forecast = data.daily;
+    var dayCard = document.createElement("LI");
+    // var dayWindSpeed =
+    // var dayHumid = 
+    dayCard.innerHTML = "Temp: " + forecast[0].temp.day;
+    document.getElementById("forecastList").appendChild(dayCard);
+
+
+    // Display info on page
     document.getElementById("nameDate").textContent = cityInput.value + " (" + (myDate.getMonth() + 1) + "/" + 
                                                     myDate.getDate() + "/" +
                                                     myDate.getFullYear() + ")";
@@ -52,12 +63,8 @@ function appendData(data) {
     document.getElementById("displayUV").textContent = uv;
 }
 
+// Event Listener for the Search button
 document.getElementById("searchBtn").addEventListener("click", function() {
     let cityInput = document.getElementById("cityInput").value;
     getCityCoord(cityInput);
 })
-
-// textbox put in a city name
-// you pass city name to getCityCoord which uses returns lat and lon
-// you pass lat and long to getCityData returns data to appendData
-// appenData fills in text on website
