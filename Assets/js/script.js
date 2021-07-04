@@ -1,6 +1,4 @@
-let city = "Richmond"
 let apiKey = "a753cb4c242ec2b4ceef62eba6bb6750"
-let url = "https://api.openweathermap.org/data/2.5/onecall?lat=37.5538&lon=-77.4603&exclude={part}&appid=" + apiKey;
 
 function getCityCoord(city) {
     url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
@@ -35,11 +33,19 @@ function getCityData(lat, lon) {
 }
 
 function appendData(data) {
+    var epochDate = data.current.dt;
+    var myDate = new Date(0);
+    myDate.setUTCSeconds(epochDate)
+    // var completeDate = myDate.setUTCSeconds(epochDate)
+
     let temp = data.current.temp;
     let windSpeed = data.current.wind_speed;
     let humid = data.current.humidity;
     let uv = data.current.uvi;
 
+    document.getElementById("nameDate").textContent = cityInput.value + " (" + (myDate.getMonth() + 1) + "/" + 
+                                                    myDate.getDate() + "/" +
+                                                    myDate.getFullYear() + ")";
     document.getElementById("displayTemp").textContent = temp;
     document.getElementById("displayWind").textContent = windSpeed;
     document.getElementById("displayHumid").textContent = humid;
@@ -48,7 +54,6 @@ function appendData(data) {
 
 document.getElementById("searchBtn").addEventListener("click", function() {
     let cityInput = document.getElementById("cityInput").value;
-    console.log(cityInput);
     getCityCoord(cityInput);
 })
 
