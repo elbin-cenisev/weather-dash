@@ -2,7 +2,26 @@ let city = "Richmond"
 let apiKey = "a753cb4c242ec2b4ceef62eba6bb6750"
 let url = "https://api.openweathermap.org/data/2.5/onecall?lat=37.5538&lon=-77.4603&exclude={part}&appid=" + apiKey;
 
-function getData() {
+function getCityCoord(city) {
+    url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
+
+    fetch(url)
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {
+        let lon = data.coord.lon;
+        let lat = data.coord.lat;
+        getCityData(lat, lon)
+    })
+    .catch(function (err) {
+        console.log(err)
+    });
+}
+
+function getCityData(lat, lon) {
+    url = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&exclude={part}&appid=" + apiKey
+
     fetch(url)
     .then(function (response) {
         return response.json()
@@ -27,4 +46,9 @@ function appendData(data) {
     document.getElementById("displayUV").textContent = uv;
 }
 
-getData();
+getCityCoord(city);
+
+// textbox put in a city name
+// you pass city name to getCityCoord which uses returns lat and lon
+// you pass lat and long to getCityData returns data to appendData
+// appenData fills in text on website
