@@ -1,4 +1,5 @@
 let apiKey = "a753cb4c242ec2b4ceef62eba6bb6750"
+let historyButtons = document.querySelectorAll(".historyBtn");
 
 function getCityCoord(city) {
     url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
@@ -10,14 +11,14 @@ function getCityCoord(city) {
     .then(function (data) {
         let lon = data.coord.lon;
         let lat = data.coord.lat;
-        getCityData(lat, lon)
+        getCityData(lat, lon, city)
     })
     .catch(function (err) {
         console.log(err)
     });
 }
 
-function getCityData(lat, lon) {
+function getCityData(lat, lon, city) {
     url = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&units=imperial&appid=" + apiKey
     console.log(url)
     fetch(url)
@@ -25,14 +26,14 @@ function getCityData(lat, lon) {
         return response.json()
     })
     .then(function (data) {
-        appendData(data);
+        appendData(data, city);
     })
     .catch(function (err) {
         console.log(err)
     });
 }
 
-function appendData(data) {
+function appendData(data, city) {
     // Convert data.current.dt into regular date
     var epochDate = data.current.dt;
     var myDate = new Date(0);
@@ -50,7 +51,7 @@ function appendData(data) {
 
     // Display info on page
     document.getElementById("nameDate").innerHTML = 
-        '<p>' + cityInput.value + " (" + (myDate.getMonth() + 1) + "/" + 
+        '<p>' + city + " (" + (myDate.getMonth() + 1) + "/" + 
         myDate.getDate() + "/" + myDate.getFullYear() + ")" + '</p>' +
         '<img src="' + iconURL + '" alt="weatherIcon">'
     document.getElementById("displayTemp").textContent = temp;
@@ -75,6 +76,7 @@ function appendData(data) {
         myDate.setUTCSeconds(epochDate)
 
         var dayCard = document.createElement("LI");
+        dayCard.classList.add("dayCard")
 
         // Get date for forecasted day
         let dateForecast = (myDate.getMonth() + 1) + "/" + 
@@ -127,11 +129,20 @@ function displayHistory(searchHistory) {
 
     // Display all history
     for (var i = 0; i < searchHistory.length; i++){
-        var historyItem = document.createElement("LI");
-        var entry = document.createTextNode(searchHistory[i]);
+        var listItem = document.createElement("LI")
+        var historyItem = document.createElement("BUTTON")
 
-        historyItem.appendChild(entry);
-        document.getElementById("historyList").appendChild(historyItem);
+        listItem.appendChild(historyItem)
+        listItem.classList.add("list-group-item")
+        historyItem.classList.add("btn-outline-secondary")
+        historyItem.classList.add("btn")
+        historyItem.classList.add("btn-wide")
+        historyItem.classList.add("historyBtn")
+
+        
+        historyItem.textContent = searchHistory[i];
+
+        document.getElementById("historyList").appendChild(listItem);
 
         // Stop loop when you reach fifth entry
         if(i === 4) {
@@ -142,10 +153,25 @@ function displayHistory(searchHistory) {
 
 // Event Listener for the Search button
 document.getElementById("searchBtn").addEventListener("click", function() {
+    document.getElementById('currentDay').style.display = "block";
+    document.getElementById('fiveForecast').style.display = "block";
     let cityInput = document.getElementById("cityInput").value;
     setHistory(getHistory(), cityInput);
     getCityCoord(cityInput);
     displayHistory(getHistory());
 })
 
+// Event delegation for button
+document.querySelector("#historyList").addEventListener('click', function(e) {
+	// check whether class "submit-button" is present in the CSS classes of target
+    document.getElementById('currentDay').style.display = "block";
+    document.getElementById('fiveForecast').style.display = "block";
+	if(e.target.classList.contains('historyBtn')) {
+		let cityButton = e.target.textContent;
+        getCityCoord(cityButton);
+	}
+});
+
+document.getElementById('currentDay').style.display = "none";
+document.getElementById('fiveForecast').style.display = "none";
 displayHistory(getHistory());
