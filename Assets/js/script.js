@@ -2,7 +2,7 @@ let apiKey = "a753cb4c242ec2b4ceef62eba6bb6750"
 let historyButtons = document.querySelectorAll(".historyBtn");
 
 function getCityCoord(city) {
-    url = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
+    url = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + apiKey;
 
     fetch(url)
     .then(function (response) {
@@ -47,7 +47,7 @@ function appendData(data, city) {
 
     // Get weather icon
     let icon = data.current.weather[0].icon;
-    let iconURL = "http://openweathermap.org/img/wn/" + icon + "@2x.png"
+    let iconURL = "https://openweathermap.org/img/wn/" + icon + "@2x.png"
 
     // Display info on page
     document.getElementById("nameDate").innerHTML = 
@@ -85,7 +85,7 @@ function appendData(data, city) {
 
         // Get weather icon
         let iconForecast = forecast[i].weather[0].icon;
-        let iconURLForecast = "http://openweathermap.org/img/wn/" + iconForecast + "@2x.png"
+        let iconURLForecast = "https://openweathermap.org/img/wn/" + iconForecast + "@2x.png"
 
         // Get other weather data 
         var tempForecast = "Temp: " + forecast[i].temp.day + " °F";
