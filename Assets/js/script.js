@@ -19,7 +19,7 @@ function getCityCoord(city) {
 
 function getCityData(lat, lon) {
     url = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lon + "&units=imperial&appid=" + apiKey
-
+    console.log(url)
     fetch(url)
     .then(function (response) {
         return response.json()
@@ -57,6 +57,13 @@ function appendData(data) {
     document.getElementById("displayWind").textContent = windSpeed;
     document.getElementById("displayHumid").textContent = humid;
     document.getElementById("displayUV").textContent = uv;
+    if(uv <= 2) {
+        document.getElementById("displayUV").style.background = "green";
+    } else if(7 <= uv >= 3) {
+        document.getElementById("displayUV").style.background = "orange";
+    } else {
+        document.getElementById("displayUV").style.background = "red";
+    }
 
     // Get info for coming five days
     let forecast = data.daily;
@@ -79,8 +86,8 @@ function appendData(data) {
         let iconURLForecast = "http://openweathermap.org/img/wn/" + iconForecast + "@2x.png"
 
         // Get other weather data 
-        var tempForecast = "Temp: " + forecast[i].temp.day;
-        let windSpeedForecast = "Wind Speed: " + forecast[i].wind_speed;
+        var tempForecast = "Temp: " + forecast[i].temp.day + " °F";
+        let windSpeedForecast = "Wind Speed: " + forecast[i].wind_speed + " MPH";
         let humidForecast = "Humidity: " + forecast[i].humidity + "%";
 
         // Add info to dayCard
@@ -111,13 +118,13 @@ function getHistory() {
     // Get history 
     var searchHistory = JSON.parse(localStorage.getItem("city")) || [];
 
-     // Remove duplicates
-     searchHistory = searchHistory.filter((v,i,a) => a.indexOf(v) === i);
-
     return searchHistory;
 }
 
 function displayHistory(searchHistory) {
+    // Reverse order so most recent is first
+    searchHistory = searchHistory.reverse();
+
     // Display all history
     for (var i = 0; i < searchHistory.length; i++){
         var historyItem = document.createElement("LI");
@@ -125,11 +132,12 @@ function displayHistory(searchHistory) {
 
         historyItem.appendChild(entry);
         document.getElementById("historyList").appendChild(historyItem);
-    }
-}
 
-function removeDuplicate(value, index, self) {
-    return self.indexOf(value) === index;
+        // Stop loop when you reach fifth entry
+        if(i === 4) {
+            break;
+        }
+    }
 }
 
 // Event Listener for the Search button
