@@ -44,6 +44,20 @@ function appendData(data) {
     let humid = data.current.humidity;
     let uv = data.current.uvi;
 
+    // Get weather icon
+    let icon = data.current.weather[0].icon;
+    let iconURL = "http://openweathermap.org/img/wn/" + icon + "@2x.png"
+
+    // Display info on page
+    document.getElementById("nameDate").innerHTML = 
+        '<p>' + cityInput.value + " (" + (myDate.getMonth() + 1) + "/" + 
+        myDate.getDate() + "/" + myDate.getFullYear() + ")" + '</p>' +
+        '<img src="' + iconURL + '" alt="weatherIcon">'
+    document.getElementById("displayTemp").textContent = temp;
+    document.getElementById("displayWind").textContent = windSpeed;
+    document.getElementById("displayHumid").textContent = humid;
+    document.getElementById("displayUV").textContent = uv;
+
     // Get info for coming five days
     let forecast = data.daily;
     document.getElementById("forecastList").innerHTML = "";
@@ -61,8 +75,8 @@ function appendData(data) {
                             myDate.getFullYear();
 
         // Get weather icon
-        let icon = forecast[i].weather[0].icon;
-        let iconURL = "http://openweathermap.org/img/wn/" + icon + "@2x.png"
+        let iconForecast = forecast[i].weather[0].icon;
+        let iconURLForecast = "http://openweathermap.org/img/wn/" + iconForecast + "@2x.png"
 
         // Get other weather data 
         var tempForecast = "Temp: " + forecast[i].temp.day;
@@ -70,7 +84,7 @@ function appendData(data) {
         let humidForecast = "Humidity: " + forecast[i].humidity + "%";
 
         // Add info to dayCard
-        dayCard.innerHTML = '<img src="' + iconURL + '" alt="weatherIcon">' +
+        dayCard.innerHTML = '<img src="' + iconURLForecast + '" alt="weatherIcon">' +
                             "<p>" + dateForecast + "</p>" +
                             "<p>" + tempForecast + "</p>" +
                             "<p>" + windSpeedForecast + "</p>" + 
@@ -79,16 +93,6 @@ function appendData(data) {
         // Append dayCard to HTML code
         document.getElementById("forecastList").appendChild(dayCard);
       }
-
-
-    // Display info on page
-    document.getElementById("nameDate").textContent = cityInput.value + " (" + (myDate.getMonth() + 1) + "/" + 
-                                                    myDate.getDate() + "/" +
-                                                    myDate.getFullYear() + ")";
-    document.getElementById("displayTemp").textContent = temp;
-    document.getElementById("displayWind").textContent = windSpeed;
-    document.getElementById("displayHumid").textContent = humid;
-    document.getElementById("displayUV").textContent = uv;
 }
 
 function setHistory(searchHistory, cityInput) {
