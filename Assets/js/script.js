@@ -91,8 +91,49 @@ function appendData(data) {
     document.getElementById("displayUV").textContent = uv;
 }
 
+function setHistory(searchHistory, cityInput) {
+
+    // Clear existing history list
+    document.getElementById("historyList").innerHTML = "";
+
+    // Add new item to history
+    searchHistory.push(cityInput);
+
+    // Update history in localStorage
+    localStorage.setItem("city", JSON.stringify(searchHistory))
+}
+
+function getHistory() {
+    // Get history 
+    var searchHistory = JSON.parse(localStorage.getItem("city")) || [];
+
+     // Remove duplicates
+     searchHistory = searchHistory.filter((v,i,a) => a.indexOf(v) === i);
+
+    return searchHistory;
+}
+
+function displayHistory(searchHistory) {
+    // Display all history
+    for (var i = 0; i < searchHistory.length; i++){
+        var historyItem = document.createElement("LI");
+        var entry = document.createTextNode(searchHistory[i]);
+
+        historyItem.appendChild(entry);
+        document.getElementById("historyList").appendChild(historyItem);
+    }
+}
+
+function removeDuplicate(value, index, self) {
+    return self.indexOf(value) === index;
+}
+
 // Event Listener for the Search button
 document.getElementById("searchBtn").addEventListener("click", function() {
     let cityInput = document.getElementById("cityInput").value;
+    setHistory(getHistory(), cityInput);
     getCityCoord(cityInput);
+    displayHistory(getHistory());
 })
+
+displayHistory(getHistory());
